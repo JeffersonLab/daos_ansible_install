@@ -1,0 +1,24 @@
+---
+- hosts: daosfs_standby
+  become: yes
+  tasks:
+    - name: set IPoIB addresses of ib1 and ib3
+      block:
+        - name: extract server idx 
+          set_fact:
+            idx: "{{ inventory_hostname.split('daosfs')[1] | int }}"      
+
+        - name: calculate IPoIB addresses
+          set_fact:
+            ib1_address: "192.168.1.{{ (( idx | int * 2) - 1) | string }}/24"
+            ib3_address: "192.168.1.{{ ( idx | int * 2) | string }}/24"
+
+        - debug:
+            msg: |
+              "Host {{ inventory_hostname }}: 
+              IB1's address should be {{ ib1_address }}
+              IB3's address should be {{ ib3_address }}"
+        
+        - name: set ips
+          shell: "ip addr add {{ ib1_address }} dev ib1 && ip addr add {{ ib3_address }} dev ib3" 
+...

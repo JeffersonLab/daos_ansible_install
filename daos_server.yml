@@ -1,0 +1,98 @@
+name: daos_server
+
+## Mandatory if MD-on-SSD bdev device roles have been assigned.
+## Define a directory or partition/mountpoint to be used as the storage location for
+## control plane metadata. The location specified should be persistent across reboots.
+#
+control_metadata:
+#  # Directory to store control plane metadata.
+#  # If device is also defined, this path will be used as the mountpoint.
+  path: /home/daos_server/control_meta
+
+# The same for all the servers and clients in the system
+access_points: 
+- daosfs01
+- daosfs02
+- daosfs03
+- daosfs04
+- nvidarm-adm
+port: 10001
+
+transport_config:
+  allow_insecure: false
+  client_cert_dir: /etc/daos/certs/clients
+  ca_cert: /etc/daos/certs/daosCA.crt
+  cert: /etc/daos/certs/server.crt
+  key: /etc/daos/certs/server.key
+provider: ofi+verbs;ofi_rxm
+control_log_mask: INFO
+control_log_file: /tmp/daos_server.log
+helper_log_file: /tmp/daos_server_helper.log
+bdev_exclude:
+- "0000:9b:00.0"
+- "0001:c9:00.0"
+
+engines:
+-
+  targets: 16
+  nr_xs_helpers: 4
+  pinned_numa_node: 0
+  fabric_iface: ib1
+  # Not sure what is this port number
+  fabric_iface_port: 32416
+  log_mask: INFO
+  log_file: /tmp/daos_engine_0.log
+  env_vars:
+    - CRT_TIMEOUT=60
+  storage:
+  -
+    class: ram
+    scm_mount: /mnt/daos0
+  -
+    class: nvme
+    bdev_roles:
+    - wal
+    bdev_list:
+    - "0000:9c:00.0"
+  - 
+    class: nvme
+    bdev_roles:
+    - data
+    - meta
+    bdev_list:
+    - "0000:c7:00.0"
+    - "0000:c8:00.0"
+    - "0000:9d:00.0"
+    - "0000:9e:00.0"
+-
+  pinned_numa_node: 1
+  targets: 16
+  nr_xs_helpers: 4
+  fabric_iface: ib3
+  # Not sure what is this
+  fabric_iface_port: 33416
+  log_mask: INFO
+  log_file: /tmp/daos_engine_1.log
+  env_vars:
+    - CRT_TIMEOUT=60
+  storage:
+  -
+    class: ram
+    scm_mount: /mnt/daos1
+  -
+    class: nvme
+    bdev_roles:
+    - wal
+    bdev_list:
+    - "0001:ca:00.0"
+  - 
+    class: nvme
+    bdev_roles:
+    - data
+    - meta
+    bdev_list:
+    - "0001:c7:00.0"
+    - "0001:c8:00.0"
+    - "0001:9b:00.0"
+    - "0001:9c:00.0"
+
