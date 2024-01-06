@@ -1,0 +1,13 @@
+---
+- hosts: daosfs_active
+  become: true
+  gather_facts: no
+  tasks:
+    - pause:
+        seconds: 5
+    - name: stop daos_server service
+      systemd:
+        name: daos_server
+        state: stopped
+...
+

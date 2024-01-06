@@ -1,19 +1,20 @@
 ---
 - hosts: daosfs_active
   become: yes
-  gather_facts: no
   tasks:
+    - name: stop daos_server service
+      systemd:
+        name: daos_server
+        state: stopped
+
+    - name: reload systemd
+      systemd:
+        state: reloaded
+        daemon_reload: yes
+
     - name: start daos_server service
       systemd:
         name: daos_server
         state: started
-
-- hosts: daosfs_standby
-  become: yes
-  tasks:
-    - name: stop service on standby servers
-      systemd:
-        name: daos_server
-        state: stopped
 ...
 

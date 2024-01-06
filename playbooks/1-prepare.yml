@@ -60,6 +60,8 @@
           src: /home/xmei/ansible_daos/certs/
           dest: /etc/daos/certs/
           recursive: yes
+          group: no
+          owner: no
       - name: set ownership
         block:
           - file:
