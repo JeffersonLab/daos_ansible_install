@@ -1,9 +1,11 @@
-# Using Ansible playbook to install daos_server
+# Using Ansible playbooks to install `daos_server`
 
-- [95-daos.conf](95-daos.conf): benefit multiple IP setting.
+## Folder structure
+DAOS configurations:
+- [95-daos.conf](95-daos.conf): multiple IP setting.
 - [daos_server.yml](daos_server.yml): DAOS server configuration file.
-- [playbooks](playbooks/): all the ansible playbooks.
 
-Above files are updated based on hardware configuration.
+Ansible:
+- [daosfs.ini](daosfs.ini): Ansible inventory file for current system.
+- [playbooks/](playbooks/): used Ansible playbooks.
 
-- [ ] Inventory file is needed.
