@@ -28,6 +28,11 @@ provider: ofi+verbs;ofi_rxm
 control_log_mask: INFO
 control_log_file: /tmp/daos_server.log
 helper_log_file: /tmp/daos_server_helper.log
+
+#telemetry
+telemetry_port: 9191
+
+# disks for system
 bdev_exclude:
 - "0000:9b:00.0"
 - "0001:c9:00.0"
