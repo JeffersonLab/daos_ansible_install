@@ -1,0 +1,14 @@
+---
+- hosts: daosfs_active # select the right group
+  become: true  # enable sudo
+  
+  tasks:
+    - name: Recursively remove /tmp/dpdk
+      file:
+        path: /tmp/dpdk
+        state: directory
+        recurse: yes
+        owner: daos_server
+        group: daos_server
+...
+

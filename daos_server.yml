@@ -43,12 +43,12 @@ engines:
   nr_xs_helpers: 4
   pinned_numa_node: 0
   fabric_iface: ib1
-  # Not sure what is this port number
+  # IPoIB port
   fabric_iface_port: 32416
   log_mask: INFO
   log_file: /tmp/daos_engine_0.log
   env_vars:
-    - CRT_TIMEOUT=60
+    - CRT_TIMEOUT=30
   storage:
   -
     class: ram
@@ -74,12 +74,12 @@ engines:
   targets: 16
   nr_xs_helpers: 4
   fabric_iface: ib3
-  # Not sure what is this
+  # IPoIB port
   fabric_iface_port: 33416
   log_mask: INFO
   log_file: /tmp/daos_engine_1.log
   env_vars:
-    - CRT_TIMEOUT=60
+    - CRT_TIMEOUT=30
   storage:
   -
     class: ram

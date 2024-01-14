@@ -1,0 +1,14 @@
+---
+# Have not test on the DAOS testbed
+
+- name: Start Grafana server node
+  hosts: grafana_server
+  become: yes
+
+  tasks:
+    - name: start Grafana
+      ansible.builtin.service:
+        name: grafana-server
+        state: started
+        enabled: yes
+...  

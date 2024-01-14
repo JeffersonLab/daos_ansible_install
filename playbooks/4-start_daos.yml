@@ -7,14 +7,10 @@
         name: daos_server
         state: stopped
 
-    - name: reload systemd
-      systemd:
-        state: reloaded
-        daemon_reload: yes
-
     - name: start daos_server service
       systemd:
         name: daos_server
         state: started
+        daemon_reload: true
 ...
 
