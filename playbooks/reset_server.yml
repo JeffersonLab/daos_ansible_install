@@ -1,0 +1,12 @@
+# Use this playbook when you find that after restarting the daos server, there are strange errors about NVME disks etc.
+#
+---
+- hosts: daos_server  # update before use
+  become: yes
+  tasks:
+    - name: delete existing control meta data
+      shell: "rm -rf /home/daos_server/control_meta/"
+
+    - name: clean engine meta data at /mnt/daos*
+      shell: "umount /mnt/daos0 && umount /mnt/daos1 && rm -rf /mnt/daos*"
+...

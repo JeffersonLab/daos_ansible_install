@@ -1,5 +1,5 @@
 ---
-- hosts: daosfs_active
+- hosts: daos_server
   become: yes
   tasks:
     - name: set IPoIB addresses of ib1 and ib3

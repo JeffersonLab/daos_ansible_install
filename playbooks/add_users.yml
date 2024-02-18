@@ -1,0 +1,29 @@
+---
+
+- name: Add users to daos client nodes
+  hosts: daos_server
+  become: true  # Run tasks with elevated privileges (sudo)
+
+  vars:
+    users_to_add:
+      - { username: "baldin", groups: ["daos_daemons"] }
+      - { username: "davidl", groups: ["daos_daemons"] }
+      - { username: "goodrich", groups: ["daos_daemons"] }
+      - { username: "gurjyan", groups: ["daos_daemons"] }
+      - { username: "timmer", groups: ["daos_daemons"] }
+
+  tasks:
+    - name: Ensure groups exist
+      group:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ users_to_add | map(attribute='groups') | flatten | unique }}"
+
+    - name: Add users to groups
+      user:
+        name: "{{ item.username }}"
+        groups: "{{ item.groups }}"
+        append: yes  # Add the user to the groups without removing from other groups
+      loop: "{{ users_to_add }}"
+...
+

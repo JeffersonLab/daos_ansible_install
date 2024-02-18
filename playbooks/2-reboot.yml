@@ -1,5 +1,5 @@
 ---
-- hosts: daosfs_standby
+- hosts: daos_server
   become: yes
   tasks:
     - name: reboot

@@ -1,5 +1,5 @@
 ---
-- hosts: daosfs_active # select the right group
+- hosts: daos_server # select the right group
   become: true  # enable sudo
   tasks:
   - name: copy daos_server.yml

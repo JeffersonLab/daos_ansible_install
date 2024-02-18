@@ -9,13 +9,13 @@ control_metadata:
 #  # If device is also defined, this path will be used as the mountpoint.
   path: /home/daos_server/control_meta
 
-# The same for all the servers and clients in the system
+# All the server hostnames in the SERVER system.
+# Make sure use the same for all the servers in the system.
+# Use the same hostname list for `hostlist` in daos_control.yml.
 access_points: 
-- daosfs01
 - daosfs02
 - daosfs03
 - daosfs04
-- nvidarm-adm
 port: 10001
 
 transport_config:
