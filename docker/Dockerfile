@@ -3,6 +3,7 @@
 
 # Command to build it
 # podman/docker build -t 
+# 
 
 #
 # 'recipe' for building a RHEL variant docker image of a DAOS client node
@@ -15,7 +16,7 @@
 # - DAOS_ADMIN_GROUP               Name or gid of the daos administrattor group (default "root")
 # - DAOS_AGENT_IFACE_CFG           Enable manual configuration of the interface to use by the agent
 #                                  (default "yes")
-# - DAOS_AGENT_IFACE_NUMA_NODE     Numa node of the interface to use by the agent (default "0")
+# - DAOS_AGENT_IFACE_NUMA_NODE     Numa node of the interface to use by the agent (default "10")
 # - DAOS_AGENT_IFACE_NAME          Name of the interface to use by the agent (default "eth0")
 # - DAOS_AGENT_IFACE_DOMAIN_NAME   Domain name of the interface to use by the agent (default "eth0")
 
@@ -31,15 +32,16 @@ LABEL description="The docker file to set up EJFAT tesbed nodes for DAOS client.
 # Install the Infiniband kernels and drivers on host OS.
 # sudo apt install infiniband-diags ibutils ibverbs-utils rdmacm-utils libibverbs-dev
 
-# Install Infiniband utilities in docker image.
+# Install Infiniband utilities & perf tools in docker image.
 RUN dnf update -y && dnf install -y infiniband-diags perftest rdma-core libibverbs
 
 # Install necessary tools for debugging and testing.
 RUN yum update && yum install -y wget iputils iproute net-tools 
 
 # Configure access to the DAOS package repository
-# SSL certification error in JLab network
-# COPY daos-packages.repo /etc/yum.repos.d/daos-packages.repo
+# In JLab network, use the EJFAT nodes to build it. Otherwise you may encounter SSL \
+# certification error on personal PCs.
+
 RUN wget -O /etc/yum.repos.d/daos-packages.repo \
 	https://packages.daos.io/v2.4/EL8/packages/x86_64/daos_packages.repo && \
 	rpm --import https://packages.daos.io/RPM-GPG-KEY && \
@@ -47,7 +49,7 @@ RUN wget -O /etc/yum.repos.d/daos-packages.repo \
 
 # Install DAOS client package
 RUN dnf install -y daos-client && \
-        dnf clean all && \
+	dnf clean all && \
 	systemctl enable daos_agent
 
 # # Install certificates
@@ -56,7 +58,7 @@ RUN dnf install -y daos-client && \
 # ARG	DAOS_ADMIN_USER=root
 # ARG	DAOS_ADMIN_GROUP=root
 # ARG	DAOS_AGENT_IFACE_CFG="yes"
-# ARG	DAOS_AGENT_IFACE_NUMA_NODE="0"
+ARG	DAOS_AGENT_IFACE_NUMA_NODE="10"  # "10" for EJFAT nodes and "0"/"1" for DAOS nodes
 # ARG	DAOS_AGENT_IFACE_NAME="eth0"
 # ARG	DAOS_AGENT_IFACE_DOMAIN_NAME="eth0"
 # COPY	daos_agent.yml.in /tmp/daos_agent.yml.in

@@ -1,0 +1,5 @@
+# Commands to run the ansible playbooks
+## Dry run
+`ansible-playbook -i ../daos.ini <playbook>.yml --check`
+## Run
+`ansible-playbook -i ../daos.ini <playbook>.yml`

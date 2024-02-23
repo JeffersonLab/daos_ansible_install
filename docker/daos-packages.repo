@@ -1,7 +1,0 @@
-[daos-packages]
-name=DAOS v2.4.1 Packages Packages
-baseurl=https://packages.daos.io/v2.4.1/EL8/packages/x86_64
-enabled=1
-gpgcheck=1
-protect=1
-gpgkey=https://packages.daos.io/RPM-GPG-KEY-2023
