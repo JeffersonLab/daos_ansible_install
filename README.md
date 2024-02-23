@@ -1,4 +1,4 @@
-# Using Ansible playbooks to install `daos_server`
+# Setting the DAOS system on JLab testbeds
 
 ## Folder structure
 - [ansible](./ansible/): Ansible playbooks and inventory files.
