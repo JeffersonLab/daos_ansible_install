@@ -4,7 +4,7 @@
   become: true  # enable sudo
 
   vars:
-    local_file_path_prefix: "/home/xmei/ansible_daos"   # Update this before use.
+    local_file_path_prefix: "/home/xmei/daos_ansible_install/daos"   # Update this before use.
 
   tasks:
   - name: copy daos_server.yml
