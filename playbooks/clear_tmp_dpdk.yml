@@ -1,5 +1,6 @@
 ---
-- hosts: daosfs_active # select the right group
+- name: Clear dpdk caches.
+  hosts: daosfs_active # select the right group
   become: true  # enable sudo
   
   tasks:

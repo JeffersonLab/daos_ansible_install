@@ -1,7 +1,8 @@
 # Use this playbook when you find that after restarting the daos server, there are strange errors about NVME disks etc.
 #
 ---
-- hosts: daos_server  # update before use
+- name: Reset DAOS servers.
+  hosts: daos_server  # update before use
   become: yes
   tasks:
     - name: delete existing control meta data

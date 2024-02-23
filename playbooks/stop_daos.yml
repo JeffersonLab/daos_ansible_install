@@ -1,13 +1,18 @@
 ---
-- hosts: daosfs_active
+- name: Stop both daos_server and daos_agent services.
+  hosts: daosfs_active
   become: true
   gather_facts: no
   tasks:
     - pause:
-        seconds: 5
+        seconds: 1
     - name: stop daos_server service
       systemd:
         name: daos_server
+        state: stopped
+    - name: stop daos_agent service
+      systemd:
+        name: daos_agent
         state: stopped
 ...
 

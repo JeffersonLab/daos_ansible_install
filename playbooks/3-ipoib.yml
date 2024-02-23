@@ -1,5 +1,6 @@
 ---
-- hosts: daos_server
+- name: Set IPoIB addresses for DAOS servers.
+  hosts: daos_server
   become: yes
   tasks:
     - name: set IPoIB addresses of ib1 and ib3
@@ -10,8 +11,8 @@
 
         - name: calculate IPoIB addresses
           set_fact:
-            ib1_address: "192.168.1.{{ (( idx | int * 2) - 1) | string }}/24"
-            ib3_address: "192.168.1.{{ ( idx | int * 2) | string }}/24"
+            ib1_address: "10.148.0.{{ (( idx | int * 2) - 1) | string }}/26"
+            ib3_address: "10.148.0.{{ ( idx | int * 2) | string }}/26"
 
         - debug:
             msg: |

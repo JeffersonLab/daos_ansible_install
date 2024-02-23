@@ -1,7 +1,6 @@
 ---
-
-- name: Add users to daos client nodes
-  hosts: daos_server
+- name: Add users to DAOS nodes.
+  hosts: daos_client
   become: true  # Run tasks with elevated privileges (sudo)
 
   vars:
