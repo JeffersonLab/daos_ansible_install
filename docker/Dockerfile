@@ -46,8 +46,8 @@ RUN wget -O /etc/yum.repos.d/daos-packages.repo \
 	yum install -y epel-release
 
 # Install DAOS client package
-RUN dnf install daos-client daos-tests &&                                                      \
-	dnf clean all &&                                                                           \
+RUN dnf install -y daos-client && \
+        dnf clean all && \
 	systemctl enable daos_agent
 
 # # Install certificates
