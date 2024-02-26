@@ -1,1 +1,2 @@
-certs/
+# The certification for DAOS client.
+docker/daosCA/certs/
