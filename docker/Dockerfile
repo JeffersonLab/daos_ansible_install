@@ -70,9 +70,10 @@ COPY ${LOCAL_CERTS_LOCATION} ${TEMP_CERTS_LOCATION}
 # This part has to match the testbed node hardware status.
 # TODO: now it is matching daosfs01, but in the future it needs to match ejfat.
 ARG	DAOS_AUTH=yes
-# Updated here. Make daosCA.crt owned by xmei:daos_daemons.
-ARG	DAOS_ADMIN_USER=xmei
-ARG	DAOS_ADMIN_GROUP=daos_daemons
+# TODO: search for better solutions here.
+# Since this is set to root:root, the daos pool has to be created with sudo.
+ARG	DAOS_ADMIN_USER=root
+ARG	DAOS_ADMIN_GROUP=root
 ARG	DAOS_AGENT_IFACE_CFG="yes"
 # "10" for EJFAT nodes and "0"/"1" for daosfs nodes.
 ARG	DAOS_AGENT_IFACE_NUMA_NODE_0="0"
