@@ -6,12 +6,9 @@
 #
 # Command to run the container:
 #   Ref: https://docs.daos.io/v2.4/QSG/docker/#running-the-daos-containers
-# $ export DAOS_IFACE_IP=<ib1 IP>
-# $ docker run --detach/-it --privileged --name=daos-client --hostname=daos-client \
-#     --add-host "daos-server:$DAOS_IFACE_IP" --add-host "daos-admin:$DAOS_IFACE_IP" \
-#     --add-host "daos-client:$DAOS_IFACE_IP" --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro \
+# $ docker run --detach --privileged --name=daos-client --hostname=daos-client \
+#     --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro \
 #     --tmpfs=/run --network=host <docker_image>
-# 
 #
 # 'recipe' for building a RHEL variant docker image of a DAOS client node
 #
@@ -23,8 +20,8 @@
 # - DAOS_ADMIN_GROUP               	Name or gid of the daos administrattor group (default "root")
 # - DAOS_AGENT_IFACE_CFG           	Enable manual configuration of the interface to use by the agent (default "yes")
 # - DAOS_AGENT_IFACE_NUMA_NODE     	Numa node of the interface to use by the agent (default "0")
-# - DAOS_AGENT_IFACE_NAME          	Name of the interface to use by the agent (default "ib0")
-# - DAOS_AGENT_IFACE_DOMAIN_NAME   	Domain name of the interface to use by the agent (default "eth0")
+# - DAOS_AGENT_IFACE_NAME          	Name of the interface to use by the agent (default "ib1")
+# - DAOS_AGENT_IFACE_DOMAIN_NAME   	Domain name of the interface to use by the agent (default "mlx5_1")
 
 # Pull base image
 ARG BASE_IMAGE=rockylinux/rockylinux
@@ -71,7 +68,7 @@ COPY ${LOCAL_CERTS_LOCATION} ${TEMP_CERTS_LOCATION}
 # TODO: now it is matching daosfs01, but in the future it needs to match ejfat.
 ARG	DAOS_AUTH=yes
 # TODO: search for better solutions here.
-# Since this is set to root:root, the daos pool has to be created with sudo.
+# Since this is set to root:root, the daos pool has to be created with sudo dmg.
 ARG	DAOS_ADMIN_USER=root
 ARG	DAOS_ADMIN_GROUP=root
 ARG	DAOS_AGENT_IFACE_CFG="yes"
