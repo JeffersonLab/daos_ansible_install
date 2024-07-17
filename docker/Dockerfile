@@ -8,7 +8,9 @@
 #   Ref: https://docs.daos.io/v2.4/QSG/docker/#running-the-daos-containers
 # $ docker run --detach --privileged --name=daos-client --hostname=daos-client \
 #     --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro \
-#     --tmpfs=/run --network=host <docker_image>
+#     --network=host <docker_image>
+#
+# Before running this docker image, remember to setup the IPoIB address for the corresponding IB devices.
 #
 # 'recipe' for building a RHEL variant docker image of a DAOS client node
 #
@@ -41,7 +43,7 @@ RUN yum update -y && yum install -y rdma-core libibverbs
 RUN yum install -y wget epel-release ucx ucx-devel
 
 # Install necessary tools for BW debugging and testing. In production mode we can remove them.
-RUN yum install -y iputils iproute net-tools perftest infiniband-diags && yum clean all
+RUN yum install -y iputils iproute net-tools perftest infiniband-diags daos-devel && yum clean all
 
 ## Install DAOS client package
 # Configure access to the DAOS package repository
@@ -55,88 +57,99 @@ RUN dnf install -y daos-client && \
 	dnf clean all && \
 	systemctl enable daos_agent
 
-## Install certificates
+# Install certificates
 
-# Copy the certifications to the docker build machine first.
-# For security issues, DO NOT push the certifications to Github!!!
-# LOCAL_CERTS_LOCATION is for docker build and is error prone!
+## Copy the certifications to the LOCAL_CERTS_LOCATION path first.
+## For security issues, DO NOT push the certifications to Github!!!
+## LOCAL_CERTS_LOCATION is for docker build and is error prone!
 ARG LOCAL_CERTS_LOCATION="daosCA/certs"
 ARG TEMP_CERTS_LOCATION="/root/daosCA"
 COPY ${LOCAL_CERTS_LOCATION} ${TEMP_CERTS_LOCATION}
 
 # This part has to match the testbed node hardware status.
-# TODO: now it is matching daosfs01, but in the future it needs to match ejfat.
+
 ARG	DAOS_AUTH=yes
-# TODO: search for better solutions here.
-# Since this is set to root:root, the daos pool has to be created with sudo dmg.
-ARG	DAOS_ADMIN_USER=root
-ARG	DAOS_ADMIN_GROUP=root
+
+## TODO: search for better solutions here.
+## To use the Infiniband interface, we must launch the image as "root",
+## thus the daos pool has to be created with sudo dmg.
+ARG	DAOS_ADMIN_USER=daos_agent
+ARG	DAOS_ADMIN_GROUP=daos_daemons
 ARG	DAOS_AGENT_IFACE_CFG="yes"
-# "10" for EJFAT nodes and "0"/"1" for daosfs nodes.
-ARG	DAOS_AGENT_IFACE_NUMA_NODE_0="0"
-ARG	DAOS_AGENT_IFACE_NUMA_NODE_1="1"
-# "iface_name" is got from "ip -br a". For daosfs nodes, "ib1" is for NUMA_NODE "0" and "ib3" is for "1".
-ARG	DAOS_AGENT_IFACE_NAME_0="ib1"
-ARG	DAOS_AGENT_IFACE_NAME_1="ib3"
-# For daosfs nodes, "mlx5_1" is for NUMA_NODE "0" and "mlx5_3" is for "1"
-ARG	DAOS_AGENT_IFACE_DOMAIN_NAME_0="mlx5_1"
-ARG	DAOS_AGENT_IFACE_DOMAIN_NAME_1="mlx5_3"
-COPY daos_agent.yml.in /tmp/daos_agent.yml.in
-RUN	if [ "$DAOS_AUTH" == yes ] ; then                                                          \
-		sed --in-place --regexp-extended                                                   \
+
+## Use "daos_agent net-scan" to get the corresponding NUMA and IB device interfaces.
+## NUMA node "2" for ejfat-6 and "0"/"1" for daosfs nodes.
+ARG	DAOS_AGENT_IFACE_NUMA_NODE="2"
+ARG	DAOS_AGENT_IFACE_NAME="ibp65s0f1"
+ARG	DAOS_AGENT_IFACE_DOMAIN_NAME="ibp65s0f1"
+
+## Configuration for daosfs nodes
+# ARG	DAOS_AGENT_IFACE_NUMA_NODE_0="0"
+# ARG	DAOS_AGENT_IFACE_NUMA_NODE_1="1"
+# # "iface_name" is got from "daos_agent net-scan". 
+# # For daosfs nodes, "ib1" is for NUMA_NODE "0" and "ib3" is for "1".
+# ARG	DAOS_AGENT_IFACE_NAME_0="ib1"
+# ARG	DAOS_AGENT_IFACE_NAME_1="ib3"
+# # For daosfs nodes, "mlx5_1" is for NUMA_NODE "0" and "mlx5_3" is for "1"
+# ARG	DAOS_AGENT_IFACE_DOMAIN_NAME_0="mlx5_1"
+# ARG	DAOS_AGENT_IFACE_DOMAIN_NAME_1="mlx5_3"
+
+## Update this based on your enviroment
+ARG DAOS_YML_INPUT_FILE="daos_agent-ejfat-6.yml.in"
+COPY ${DAOS_YML_INPUT_FILE} /tmp/daos_agent.yml.in
+
+# Configure the cert files
+## mode 664: owner & group RW
+RUN	if [ "$DAOS_AUTH" == yes ] ; then \
+		sed --in-place --regexp-extended \
 			--expression '/^@DAOS_NOAUTH_SECTION_BEGIN@$/,/^@DAOS_NOAUTH_SECTION_END@/d' \
 			--expression '/(^@DAOS_AUTH_SECTION_BEGIN@$)|(^@DAOS_AUTH_SECTION_END@$)/d' \
-			/tmp/daos_agent.yml.in &&                                                  \
-		chmod 644 ${TEMP_CERTS_LOCATION}/certs/daosCA.crt &&                                         \
-		chmod 644 ${TEMP_CERTS_LOCATION}/certs/agent.crt &&                                          \
-		chmod 400 ${TEMP_CERTS_LOCATION}/certs/agent.key &&                                          \
-		chown "$DAOS_ADMIN_USER:$DAOS_ADMIN_GROUP" ${TEMP_CERTS_LOCATION}/certs/daosCA.crt &&        \
-		chown daos_agent:daos_agent ${TEMP_CERTS_LOCATION}/certs/agent.crt &&                        \
-		chown daos_agent:daos_agent ${TEMP_CERTS_LOCATION}/certs/agent.key &&                        \
-		mv ${TEMP_CERTS_LOCATION}/certs/daosCA.crt /etc/daos/certs/. &&                              \
-		mv ${TEMP_CERTS_LOCATION}/certs/agent.crt /etc/daos/certs/. &&                               \
-		mv ${TEMP_CERTS_LOCATION}/certs/agent.key /etc/daos/certs/. &&                               \
-		rm -fr ${TEMP_CERTS_LOCATION} ;                                                              \
-	else                                                                                       \
-		sed --in-place --regexp-extended                                                   \
-			--expression '/^@DAOS_AUTH_SECTION_BEGIN@$/,/^@DAOS_AUTH_SECTION_END@/d'   \
+			/tmp/daos_agent.yml.in && \
+		chmod 664 ${TEMP_CERTS_LOCATION}/certs/daosCA.crt && \
+		chmod 644 ${TEMP_CERTS_LOCATION}/certs/agent.crt && \
+		chmod 400 ${TEMP_CERTS_LOCATION}/certs/agent.key && \
+		chown "$DAOS_ADMIN_USER:$DAOS_ADMIN_GROUP" ${TEMP_CERTS_LOCATION}/certs/daosCA.crt && \
+		chown daos_agent:daos_agent ${TEMP_CERTS_LOCATION}/certs/agent.crt && \
+		chown daos_agent:daos_agent ${TEMP_CERTS_LOCATION}/certs/agent.key && \
+		mv ${TEMP_CERTS_LOCATION}/certs/daosCA.crt /etc/daos/certs/. && \
+		mv ${TEMP_CERTS_LOCATION}/certs/agent.crt /etc/daos/certs/. && \
+		mv ${TEMP_CERTS_LOCATION}/certs/agent.key /etc/daos/certs/. && \
+		rm -fr ${TEMP_CERTS_LOCATION} ; \
+	else \
+		sed --in-place --regexp-extended \
+			--expression '/^@DAOS_AUTH_SECTION_BEGIN@$/,/^@DAOS_AUTH_SECTION_END@/d' \
 			--expression '/(^@DAOS_NOAUTH_SECTION_BEGIN@$)|(^@DAOS_NOAUTH_SECTION_END@$)/d' \
-			/tmp/daos_agent.yml.in ;                                                   \
-	fi &&                                                                                      \
-	if [[ "${DAOS_AGENT_IFACE_CFG}" == yes ]] ; then                                           \
-		for it in DAOS_AGENT_IFACE_NUMA_NODE_0 DAOS_AGENT_IFACE_NAME_0 DAOS_AGENT_IFACE_DOMAIN_NAME_0 ; do \
-			if eval "[[ -z \"\$$it\" ]]" ; then                                        \
-				echo "[ERROR] Docker build argument $it is not defined" ;          \
-				exit 1 ;                                                           \
-			fi ;                                                                       \
-		done ;																							\
-		for it in DAOS_AGENT_IFACE_NUMA_NODE_1 DAOS_AGENT_IFACE_NAME_1 DAOS_AGENT_IFACE_DOMAIN_NAME_1 ; do \
-			if eval "[[ -z \"\$$it\" ]]" ; then                                        \
-				echo "[ERROR] Docker build argument $it is not defined" ;          \
-				exit 1 ;                                                           \
-			fi ;                                                                       \
-		done ;                                                                            \
-		sed --in-place --regexp-extended                                                   \
+			/tmp/daos_agent.yml.in ; \
+	fi
+
+## Set /etc/daos/daos_agent.yml
+RUN	if [[ "${DAOS_AGENT_IFACE_CFG}" == yes ]] ; then \
+		for it in DAOS_AGENT_IFACE_NUMA_NODE DAOS_AGENT_IFACE_NAME DAOS_AGENT_IFACE_DOMAIN_NAME ; do \
+			if eval "[[ -z \"\$$it\" ]]" ; then \
+				echo "[ERROR] Docker build argument $it is not defined" ; \
+				exit 1 ; \
+			fi ; \
+		done ; \
+		sed --in-place --regexp-extended \
 			--expression '/(^@DAOS_IFACE_SECTION_BEGIN@$)|(^@DAOS_IFACE_SECTION_END@$)/d' \
-			--expression "s/@DAOS_IFACE_NUMA_NODE_0@/${DAOS_AGENT_IFACE_NUMA_NODE_0}/"     \
-			--expression "s/@DAOS_IFACE_NAME_0@/${DAOS_AGENT_IFACE_NAME_0}/"               \
-			--expression "s/@DAOS_IFACE_DOMAIN_NAME_0@/${DAOS_AGENT_IFACE_DOMAIN_NAME_0}/" \
-			--expression "s/@DAOS_IFACE_NUMA_NODE_1@/${DAOS_AGENT_IFACE_NUMA_NODE_1}/"     \
-			--expression "s/@DAOS_IFACE_NAME_1@/${DAOS_AGENT_IFACE_NAME_1}/"               \
-			--expression "s/@DAOS_IFACE_DOMAIN_NAME_1@/${DAOS_AGENT_IFACE_DOMAIN_NAME_1}/" \
-			/tmp/daos_agent.yml.in ;                                                   \
-	else                                                                                       \
-		sed --in-place --regexp-extended                                                   \
+			--expression "s/@DAOS_IFACE_NUMA_NODE@/${DAOS_AGENT_IFACE_NUMA_NODE}/" \
+			--expression "s/@DAOS_IFACE_NAME@/${DAOS_AGENT_IFACE_NAME}/" \
+			--expression "s/@DAOS_IFACE_DOMAIN_NAME@/${DAOS_AGENT_IFACE_DOMAIN_NAME}/" \
+			/tmp/daos_agent.yml.in ; \
+	else \
+		sed --in-place --regexp-extended \
 			--expression '/^@DAOS_IFACE_SECTION_BEGIN@$/,/^@DAOS_IFACE_SECTION_END@/d' \
-			/tmp/daos_agent.yml.in ;                                                   \
-	fi &&                                                                                      \
+			/tmp/daos_agent.yml.in ; \
+	fi && \
 	mv -f /tmp/daos_agent.yml.in /etc/daos/daos_agent.yml
 
-## Setup entrypoint
-RUN mkdir -p /var/run/daos_agent && chmod 755 /var/run/daos_agent
+# Setup entrypoint
+RUN mkdir -p /var/run/daos_agent && \
+	chown "daos_agent:daos_agent" /var/run/daos_agent && \
+	chmod 777 /var/run/daos_agent
 
-# Donot use systemctl start daos_agent. See the error below.
-# [root@daos-client /]# systemctl start daos_agent
-# System has not been booted with systemd as init system (PID 1). Can't operate.
-# Failed to connect to bus: Host is down
-CMD daos_agent
+## Donot use systemctl start daos_agent. See the error below.
+## [root@daos-client /]# systemctl start daos_agent
+## System has not been booted with systemd as init system (PID 1). Can't operate.
+## Failed to connect to bus: Host is down
+CMD bash

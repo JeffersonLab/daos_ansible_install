@@ -1,0 +1,39 @@
+# Input of the DAOS agent configuration file.
+# Author: xmei@jlab.org. Init date: Feb/26 2024.
+
+# Changed based on the file at \
+# https://github.com/daos-stack/daos/blob/release/2.4/utils/docker/vcluster/daos-client/el8/daos_agent.yml.in
+
+name: daos_server
+
+# TODO: Adjust this part based on your DAOS server configuration!!!
+access_points:
+- daosfs02
+- daosfs03
+- daosfs04
+
+port: 10001
+
+runtime_dir: /var/run/daos_agent
+log_file: /tmp/daos_agent.log
+control_log_mask: DEBUG
+disable_caching: true
+
+transport_config:
+@DAOS_NOAUTH_SECTION_BEGIN@
+  allow_insecure: true
+@DAOS_NOAUTH_SECTION_END@
+@DAOS_AUTH_SECTION_BEGIN@
+  allow_insecure: false
+  ca_cert: /etc/daos/certs/daosCA.crt
+  cert: /etc/daos/certs/agent.crt
+  key: /etc/daos/certs/agent.key
+@DAOS_AUTH_SECTION_END@
+
+@DAOS_IFACE_SECTION_BEGIN@
+fabric_ifaces:
+- numa_node: @DAOS_IFACE_NUMA_NODE@
+  devices:
+    - iface: @DAOS_IFACE_NAME@
+      domain: @DAOS_IFACE_DOMAIN_NAME@
+@DAOS_IFACE_SECTION_END@

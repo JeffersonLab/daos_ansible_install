@@ -1,0 +1,80 @@
+## Output of "daos_agent dump-topology"
+
+NUMA Node 0
+  CPU cores: 0-7
+  PCI buses:
+    0000:[60-65]
+      0000:61:00.0
+        0000:61:00.0 eno1 (network interface) @ 1.00 GB/s
+      0000:61:00.1
+        0000:61:00.1 eno2 (network interface) @ 1.00 GB/s
+NUMA Node 1
+  CPU cores: 8-15
+  PCI buses:
+NUMA Node 2
+  CPU cores: 16-23
+  PCI buses:
+    0000:[40-44]
+      0000:41:00.0
+        0000:41:00.0 enp65s0f0np0 (network interface) @ 31.51 GB/s
+        0000:41:00.0 rocep65s0f0 (OFI domain) @ 31.51 GB/s
+      0000:41:00.1
+        0000:41:00.1 ibp65s0f1 (network interface) @ 31.51 GB/s
+        0000:41:00.1 ibp65s0f1 (OFI domain) @ 31.51 GB/s
+      0000:44:00.0
+        0000:44:00.0 sdb (960 GB block device) @ 31.51 GB/s
+        0000:44:00.0 sda (960 GB block device) @ 31.51 GB/s
+NUMA Node 3
+  CPU cores: 24-31
+  PCI buses:
+NUMA Node 4
+  CPU cores: 32-39
+  PCI buses:
+    0000:[20-26]
+NUMA Node 5
+  CPU cores: 40-47
+  PCI buses:
+NUMA Node 6
+  CPU cores: 48-55
+  PCI buses:
+    0000:[00-02]
+NUMA Node 7
+  CPU cores: 56-63
+  PCI buses:
+NUMA Node 8
+  CPU cores: 64-71
+  PCI buses:
+    0000:[e0-e2]
+NUMA Node 9
+  CPU cores: 72-79
+  PCI buses:
+NUMA Node 10
+  CPU cores: 80-87
+  PCI buses:
+    0000:[c0-c4]
+      0000:c1:00.0
+        0000:c1:00.0 enp193s0f0np0 (network interface) @ 31.51 GB/s
+        0000:c1:00.0 rocep193s0f0 (OFI domain) @ 31.51 GB/s
+      0000:c1:00.1
+        0000:c1:00.1 enp193s0f1np1 (network interface) @ 31.51 GB/s
+        0000:c1:00.1 rocep193s0f1 (OFI domain) @ 31.51 GB/s
+NUMA Node 11
+  CPU cores: 88-95
+  PCI buses:
+NUMA Node 12
+  CPU cores: 96-103
+  PCI buses:
+    0000:[a0-a3]
+NUMA Node 13
+  CPU cores: 104-111
+  PCI buses:
+NUMA Node 14
+  CPU cores: 112-119
+  PCI buses:
+    0000:[80-82]
+NUMA Node 15
+  CPU cores: 120-127
+  PCI buses:
+Virtual Devices
+  docker0 (network interface)
+  lo (network interface)
