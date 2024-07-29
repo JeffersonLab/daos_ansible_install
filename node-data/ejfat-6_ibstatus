@@ -1,0 +1,10 @@
+## Output of "sudo ibstatus". Choose the 200 Gb/sec device.
+
+Infiniband device 'ibp65s0f1' port 1 status:
+        default gid:     fe80:0000:0000:0000:a088:c203:00e0:92c3
+        base lid:        0x2d
+        sm lid:          0xa
+        state:           4: ACTIVE
+        phys state:      5: LinkUp
+        rate:            200 Gb/sec (4X HDR)
+        link_layer:      InfiniBand
