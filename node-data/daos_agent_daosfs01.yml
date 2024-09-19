@@ -4,9 +4,14 @@ name: daos_server
 
 # TODO: Adjust this part based on your DAOS server configuration!!!
 access_points:
+- daosfs01
 - daosfs02
 - daosfs03
 - daosfs04
+- daosfs05
+- daosfs06
+- daosfs07
+- daosfs08
 
 port: 10001
 

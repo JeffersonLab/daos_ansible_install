@@ -1,0 +1,15 @@
+# Use when you want to see the daos_server version on the storage nodes
+
+- name: Display the DAOS server version
+  hosts: daosfs
+  gather_facts: no  # Disable default fact gathering
+
+  tasks:
+    - name: Run 'daos_server version' command
+      command: daos_server version
+      register: daos_server_version_output
+
+    - name: Display DAOS server version
+      debug:
+        msg: "Host: {{ inventory_hostname }}\n{{ daos_server_version_output.stdout }}"
+

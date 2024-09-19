@@ -1,0 +1,23 @@
+# Use when you want to confirm all the IPoIB addresses are set
+
+- name: Display the IP address of the IB interface
+  hosts: daosfs
+  gather_facts: no  # Disable default fact gathering
+  vars:
+    interface: ib3  # IMPORTANT： update here!
+
+  tasks:
+    - name: Run 'ip -4 addr show {{ interface }}' command
+      shell: ip -4 addr show {{ interface }} | grep inet
+      register: ib_output
+      ignore_errors: yes  # Continue even if the command fails (e.g., if ib1 doesn't exist)
+
+    - name: Display the output of 'ip -4 addr show {{ interface }}'
+      debug:
+        msg: "Host: {{ inventory_hostname }}\n{{ ib_output.stdout }}"
+      when: ib_output.rc == 0  # Only display if the command succeeded
+
+    - name: Notify if '{{ interface }}' interface is not found or command failed
+      debug:
+        msg: "Host: {{ inventory_hostname }} - '{{ interface }}' interface not found or command failed."
+      when: ib_output.rc != 0

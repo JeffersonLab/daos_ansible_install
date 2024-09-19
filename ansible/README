@@ -1,4 +1,7 @@
 # Commands to run the ansible playbooks
+
+Assume the current path is `ansible/playbooks`.
+
 ## Dry run
 `ansible-playbook -i ../daos.ini <playbook>.yml --check`
 ## Run
