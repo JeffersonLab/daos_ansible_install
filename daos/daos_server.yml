@@ -12,10 +12,15 @@ control_metadata:
 # All the server hostnames in the SERVER system.
 # Make sure use the same for all the servers in the system.
 # Use the same hostname list for `hostlist` in daos_control.yml.
-access_points: 
+access_points:
+- daosfs01
 - daosfs02
 - daosfs03
 - daosfs04
+- daosfs05
+- daosfs06
+- daosfs07
+- daosfs08
 port: 10001
 
 transport_config:
@@ -59,7 +64,7 @@ engines:
     - wal
     bdev_list:
     - "0000:9c:00.0"
-  - 
+  -
     class: nvme
     bdev_roles:
     - data
@@ -90,7 +95,7 @@ engines:
     - wal
     bdev_list:
     - "0001:ca:00.0"
-  - 
+  -
     class: nvme
     bdev_roles:
     - data
@@ -100,4 +105,3 @@ engines:
     - "0001:c8:00.0"
     - "0001:9b:00.0"
     - "0001:9c:00.0"
-
