@@ -4,7 +4,7 @@
   hosts: daosfs
   gather_facts: no  # Disable default fact gathering
   vars:
-    interface: ib3
+    interface: ib3  # IMPORTANT： update here!
 
   tasks:
     - name: Run 'ip -4 addr show {{ interface }}' command
