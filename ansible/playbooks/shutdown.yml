@@ -1,0 +1,8 @@
+---
+- name: Shutdown all nodes
+  hosts: daosfs
+  become: yes  # Become sudo
+  tasks:
+    - name: Shutdown the node
+      command: shutdown -h now
+```
