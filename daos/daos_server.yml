@@ -10,7 +10,7 @@ control_metadata:
   path: /home/daos_server/control_meta
 
 # All the server hostnames in the SERVER system.
-# Make sure use the same for all the servers in the system.
+# Make sure use it's identical for all the server nodes in the storage system.
 # Use the same hostname list for `hostlist` in daos_control.yml.
 access_points:
 - daosfs01
@@ -105,3 +105,4 @@ engines:
     - "0001:c8:00.0"
     - "0001:9b:00.0"
     - "0001:9c:00.0"
+

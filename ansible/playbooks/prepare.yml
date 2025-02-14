@@ -28,7 +28,7 @@
           line: 'disable_system_repos=0'
 
       - name: download daos-packages.repo
-        command: wget -O /etc/yum.repos.d/daos-packages.repo https://packages.daos.io/v2.4/EL8/packages/x86_64/daos_packages.repo
+        command: wget -O /etc/yum.repos.d/daos-packages.repo https://packages.daos.io/v2.6/EL8/packages/x86_64/daos_packages.repo
 
       - name: Import RPM-GPG-KEY
         command: rpm --import https://packages.daos.io/RPM-GPG-KEY
