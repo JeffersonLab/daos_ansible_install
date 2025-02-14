@@ -2,7 +2,7 @@
 #
 ---
 - name: Reset DAOS servers.
-  hosts: daos_server  # update before use
+  hosts: daosfs  # update before use
   become: yes
   tasks:
     - name: delete existing control meta data
