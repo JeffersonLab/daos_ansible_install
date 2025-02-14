@@ -1,0 +1,58 @@
+---
+# Setup certification for the DAOS client nodes
+
+- name: Setup DAOS server certification
+  hosts: daos_client  # Select the right group
+  become: true   # Enable sudo
+  gather_facts: no  # Skip gathering facts
+
+  tasks:
+    - name: Delete existing certs
+      file:
+        path: /etc/daos/certs
+        state: absent
+
+    - name: Recreate the certificates directory
+      file:
+        path: /etc/daos/certs
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Copy and configure certificates
+      block:
+        - name: Copy DAOS CA certificate
+          synchronize:
+            src: /home/xmei/daosCA/certs/daosCA.crt  # <=== Update this path!!!
+            dest: /etc/daos/certs/daosCA.crt
+
+        - name: Copy DAOS client certificate
+          synchronize:
+            src: /home/xmei/daosCA/certs/agent.crt
+            dest: /etc/daos/certs/agent.crt
+
+        - name: Copy DAOS client key
+          synchronize:
+            src: /home/xmei/daosCA/certs/agent.key
+            dest: /etc/daos/certs/agent.key
+
+    - name: Set ownership
+      block:
+        - name: Set ownership for DAOS CA certificate
+          file:
+            path: /etc/daos/certs/daosCA.crt
+            owner: root
+            group: root
+
+        - name: Set ownership for DAOS client certificate
+          file:
+            path: /etc/daos/certs/agent.crt
+            owner: daos_agent
+            group: daos_agent
+
+        - name: Set ownership for DAOS client key
+          file:
+            path: /etc/daos/certs/agent.key
+            owner: daos_agent
+            group: daos_agent
