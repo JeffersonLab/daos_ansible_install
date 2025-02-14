@@ -1,2 +1,4 @@
 # The certification for the daos system
-docker/daosCA/certs/
+*.crt
+*.key
+certs/

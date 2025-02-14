@@ -1,0 +1,32 @@
+---
+- name: Copy files to destination hosts.
+  hosts: daosfs # select the right group
+  become: true  # enable sudo
+
+  vars:
+    local_file_path_prefix: "/home/xmei/daos_ansible_install/daos"   # Update this before use.
+
+  tasks:
+  - name: copy daos_server.yml
+    synchronize:
+      src: "{{ local_file_path_prefix }}/daos_server.yml"
+      dest: /etc/daos/daos_server.yml
+
+  - name: Set ownership for daos_server.yml
+    file:
+      path: /etc/daos/daos_server.yml
+      owner: daos_server
+      group: daos_server
+
+  - name: copy 95-daos.conf for multiple IPoIB IP addresses
+    synchronize:
+      src: "{{ local_file_path_prefix }}/95-daos.conf"
+      dest: /etc/sysctl.d/95-daos.conf
+
+  - name: Set ownership for 95-daos.conf
+    file:
+      path: /etc/sysctl.d/95-daos.conf
+      owner: root
+      group: root
+...
+
