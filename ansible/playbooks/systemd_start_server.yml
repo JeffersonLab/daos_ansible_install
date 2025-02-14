@@ -1,5 +1,5 @@
 ---
-- hosts: daos_server
+- hosts: daosfs
   become: yes
   tasks:
     - name: stop daos_server service
