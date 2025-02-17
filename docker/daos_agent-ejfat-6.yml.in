@@ -2,7 +2,7 @@
 # Author: xmei@jlab.org. Init date: Feb/26 2024.
 
 # Changed based on the file at \
-# https://github.com/daos-stack/daos/blob/release/2.4/utils/docker/vcluster/daos-client/el8/daos_agent.yml.in
+# https://github.com/daos-stack/daos/blob/release/2.6/utils/docker/vcluster/daos-client/el8/daos_agent.yml.in
 
 name: daos_server
 
