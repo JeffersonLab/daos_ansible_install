@@ -1,5 +1,5 @@
 ---
-- name: Restart daos_agent services.
+- name: Restart daos_agent services
   hosts: daos_client
   become: yes
   tasks:

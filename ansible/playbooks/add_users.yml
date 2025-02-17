@@ -10,6 +10,7 @@
       - { username: "goodrich", groups: ["daos_daemons"] }
       - { username: "gurjyan", groups: ["daos_daemons"] }
       - { username: "timmer", groups: ["daos_daemons"] }
+      - { username: "xmei", groups: ["daos_daemons"] }
 
   tasks:
     - name: Ensure groups exist

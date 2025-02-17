@@ -42,8 +42,8 @@
         - name: Set ownership for DAOS CA certificate
           file:
             path: /etc/daos/certs/daosCA.crt
-            owner: root
-            group: root
+            owner: xmei
+            group: scitestbed  # <== Cover most of the users
 
         - name: Set ownership for DAOS client certificate
           file:
