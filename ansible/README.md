@@ -29,6 +29,58 @@ Real Run:
 2. Configure the certification of the new storage node.
 3. Format the new node's storage: `dmg storage format -l <new-node>`. After a while, check if the new node is in the system: `dmg system query --verbose`.
 
+```bash
+# On the DAOS Admin node
+[xmei@daos-adm ~]$ dmg system query --verbose
+Rank UUID                                 Control Address     Fault Domain       State  Reason 
+---- ----                                 ---------------     ------------       -----  ------ 
+0    81971ecf-59d8-47fc-acd2-fec985e4e3ed 129.57.178.24:10001 /daosfs01          Joined        
+1    0387c89d-4736-4904-ace2-f40ffcb7e47d 129.57.178.24:10001 /daosfs01          Joined        
+2    19595070-bd13-4fbe-8cd8-d37286ab9218 129.57.178.25:10001 /daosfs02.jlab.org Joined        
+3    7ff3da9d-fd5a-4dbb-b86f-d15f704fef99 129.57.178.29:10001 /daosfs06.jlab.org Joined        
+4    439ba6d3-5a0b-4294-9665-e65bf4ea366a 129.57.178.25:10001 /daosfs02.jlab.org Joined        
+5    d54255cc-4927-469b-b579-8038e245217d 129.57.178.26:10001 /daosfs03.jlab.org Joined        
+6    71920a92-abf7-4da6-8423-613bbb3af80c 129.57.178.27:10001 /daosfs04.jlab.org Joined        
+7    26e5667e-92a7-4534-ad4d-02f6555641cf 129.57.178.29:10001 /daosfs06.jlab.org Joined        
+8    0f725d69-ca99-4e51-9054-22c9b8def81a 129.57.178.26:10001 /daosfs03.jlab.org Joined        
+9    800afc76-7958-49ce-8227-dd88fbfe3977 129.57.178.27:10001 /daosfs04.jlab.org Joined        
+10   2d04a1b9-379d-4c5d-be24-e1771ffc66d4 129.57.178.28:10001 /daosfs05.jlab.org Joined        
+11   cd5726ee-2f7c-48c6-9c15-723e2e15bf19 129.57.178.28:10001 /daosfs05.jlab.org Joined        
+12   6936dc46-9f96-4b15-8a0c-a3956c6f19dd 129.57.178.30:10001 /daosfs07.jlab.org Joined        
+13   87d79171-7b38-464e-84fa-f65718aacdc9 129.57.178.30:10001 /daosfs07.jlab.org Joined
+
+[xmei@daos-adm ~]$ dmg storage scan
+Hosts         SCM Total       NVMe Total             
+-----         ---------       ----------             
+daosfs01      0 B (0 modules) 32 TB (10 controllers)
+daosfs03      0 B (0 modules) 32 TB (10 controllers)
+daosfs04      0 B (0 modules) 32 TB (10 controllers)
+daosfs06      0 B (0 modules) 32 TB (10 controllers)
+daosfs07      0 B (0 modules) 32 TB (10 controllers)
+daosfs[02,05] 0 B (0 modules) 32 TB (10 controllers)
+```
+
+```bash
+# On the DAOS client side
+[xmei@daosfs08 ~]$ daos pool autotest testpool  # pool test tool `autotest`
+Step Operation                 Status Time(sec) Comment
+...
+ 99  Tearing down DAOS          PASS    0.000  
+All steps passed.
+
+[xmei@daosfs08 ~]$ daos system query
+connected to DAOS system:
+	name: daos_server
+	fabric provider: ofi+verbs;ofi_rxm
+	access point ranks:
+    ...
+		rank[13]: ofi+verbs;ofi_rxm://172.19.27.56:32416
+		rank[0]: ofi+verbs;ofi_rxm://172.19.27.19:32416
+	rank URIs:
+    ...
+		rank[13]: ofi+verbs;ofi_rxm://172.19.27.56:32416
+```
+
 #### Common bugs 
 
 If `daos_server` is running correctly, the output of `sudo systemctl status daos_server` looks like below:
