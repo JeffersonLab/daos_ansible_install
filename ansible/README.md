@@ -17,7 +17,7 @@ Real Run:
 1. Install daos_server on all the nodes. Make sure IPoIB and [95-daos.conf](../daos/95-daos.conf) are configured.
 2. Sync the DAOS server configuration file [daos_server.yml](../daos/daos_server.yml) across all the storage nodes.
 3. Ensure the certification files under `/etc/daos/certs` are owned by `daos_server:daos_server`.
-4. Start the daos_server service via [systemctl](./playbooks/sync_server_config.yml).
+4. Start the daos_server service via [systemctl](./playbooks/systemd_start_server.yml).
 5. On the Admin node, make sure the ownership of the certifications is set to `${USER}:scitestbed`.
 6. On the Admin node:
     - Configure `daos_control.yml` under `/etc/daos` according to the server status.
@@ -27,7 +27,7 @@ Real Run:
 #### Add a node to the existing system.
 1. Update `daos_server.yml`, `daos_agent.yml` and `daos_control.yml` across the system.
 2. Configure the certification of the new storage node.
-3. Format the new node's storage: `dmg storage format -l <new-node>`. After a while, check if the new node is in the system: `dmg system query --verbose`.
+3. Format the new node's storage: `dmg storage format -l <new-node>`. *After a while*, check if the new node is in the system: `dmg system query --verbose`.
 
 ```bash
 # On the DAOS Admin node
