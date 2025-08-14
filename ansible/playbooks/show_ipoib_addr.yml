@@ -1,7 +1,7 @@
 # Use when you want to confirm all the IPoIB addresses are set
 
 - name: Display the IP address of the IB interface
-  hosts: daosfs
+  hosts: daos_all # select the right group
   gather_facts: no  # Disable default fact gathering
   vars:
     interface: ib3  # IMPORTANT： update here!
