@@ -1,5 +1,5 @@
 # Dockerfile revised based on the DAOS v2.4 release at
-# https://github.com/daos-stack/daos/blob/release/2.4/utils/docker/vcluster/daos-client/el8/Dockerfile
+# https://github.com/daos-stack/daos/blob/release/2.6/utils/docker/vcluster/daos-client/el8/Dockerfile
 
 # Command to build it
 # $ podman/docker build -t <tag> [--no-cache] .
@@ -32,7 +32,7 @@ FROM $BASE_IMAGE:$ROCKY_VERSION as base
 LABEL maintainer="xmei@jlab.org"
 LABEL description="The docker file to set up EJFAT tesbed nodes for DAOS client."
 
-## Install the Infiniband kernels and drivers on host OS.
+## Install the Infiniband kernels and drivers on host Ubuntu OS.
 # sudo apt install infiniband-diags ibutils ibverbs-utils rdmacm-utils libibverbs-dev
 
 ## Install Infiniband utilities tools in docker image.
@@ -50,7 +50,7 @@ RUN yum install -y iputils iproute net-tools perftest infiniband-diags daos-deve
 # In JLab network, use the EJFAT nodes to build it. Otherwise you may encounter SSL \
 # certification error on personal PCs.
 RUN wget -O /etc/yum.repos.d/daos-packages.repo \
-	https://packages.daos.io/v2.4/EL8/packages/x86_64/daos_packages.repo && \
+	https://packages.daos.io/v2.6/EL8/packages/x86_64/daos_packages.repo && \
 	rpm --import https://packages.daos.io/RPM-GPG-KEY
 
 RUN dnf install -y daos-client && \
