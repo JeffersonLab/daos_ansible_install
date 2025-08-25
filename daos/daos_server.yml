@@ -41,6 +41,7 @@ bdev_exclude:
 - "0000:9b:00.0"
 - "0001:c9:00.0"
 
+# Last updated on Aug 25, 2025 to reflect current NVMe PEIe addresses
 engines:
 -
   targets: 16
@@ -62,17 +63,17 @@ engines:
     bdev_roles:
     - wal
     bdev_list:
-    - "0000:9c:00.0"
+    - "0000:51:00.0"
   -
     class: nvme
     bdev_roles:
     - data
     - meta
     bdev_list:
-    - "0000:c7:00.0"
-    - "0000:c8:00.0"
-    - "0000:9d:00.0"
-    - "0000:9e:00.0"
+    - "0000:52:00.0"
+    - "0000:53:00.0"
+    - "0000:63:00.0"
+    - "0000:64:00.0"
 -
   pinned_numa_node: 1
   targets: 16
@@ -93,14 +94,14 @@ engines:
     bdev_roles:
     - wal
     bdev_list:
-    - "0001:ca:00.0"
+    - "0000:e4:00.0"
   -
     class: nvme
     bdev_roles:
     - data
     - meta
     bdev_list:
-    - "0001:c7:00.0"
-    - "0001:c8:00.0"
-    - "0001:9b:00.0"
-    - "0001:9c:00.0"
+    - "0000:cf:00.0"
+    - "0000:d0:00.0"
+    - "0000:e1:00.0"
+    - "0000:e2:00.0"
