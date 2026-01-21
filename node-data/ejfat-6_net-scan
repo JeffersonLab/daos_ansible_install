@@ -1,40 +1,27 @@
-## Output of "daos_agent net-scan"
+## Status of "daos_agent net-scan"
 
 ---------
 localhost
 ---------
 
     -------------
+    NUMA Socket 1
+    -------------
+
+        Provider          Interfaces  
+        --------          ----------  
+        ofi+sockets       highspeed-2 
+        ofi+tcp;ofi_rxm   highspeed-2 
+        ofi+tcp           highspeed-2 
+        ofi+verbs;ofi_rxm highspeed-2 
+
+    -------------
     NUMA Socket 0
     -------------
 
-        Provider        Interfaces 
-        --------        ---------- 
-        ucx+tcp         eno1       
-        ofi+tcp         eno1       
-        ofi+tcp;ofi_rxm eno1       
-        ucx+all         eno1       
-        ofi+sockets     eno1       
-
-    --------------
-    NUMA Socket 10
-    --------------
-
-        Provider          Interfaces    
-        --------          ----------    
-        ucx+all           enp193s0f1np1 
-        ofi+sockets       enp193s0f1np1 
-        ofi+verbs         enp193s0f1np1 
-        ofi+verbs;ofi_rxm enp193s0f1np1 
-        ucx+tcp           enp193s0f1np1 
-        ofi+tcp           enp193s0f1np1 
-        ofi+tcp;ofi_rxm   enp193s0f1np1 
-
-    -------------
-    NUMA Socket 2
-    -------------
-
-        Provider          Interfaces 
-        --------          ---------- 
-        ofi+verbs         ibp65s0f1  
-        ofi+verbs;ofi_rxm ibp65s0f1
+        Provider          Interfaces            
+        --------          ----------            
+        ofi+tcp           ibp65s0f1, lowspeed-1 
+        ofi+verbs;ofi_rxm ibp65s0f1             
+        ofi+sockets       ibp65s0f1, lowspeed-1 
+        ofi+tcp;ofi_rxm   ibp65s0f1, lowspeed-1 
