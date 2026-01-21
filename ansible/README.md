@@ -14,12 +14,13 @@ Real Run:
 
 ### Bring up the DAOS storage nodes
 #### Start from a fresh state
+0. Reset the DAOS server and client nodes if necessary. [Script-1](./playbooks/reset_server.yml), [Script-2](./playbooks/clear_tmp_dpdk.yml).
 1. Install daos_server on all the nodes. Make sure IPoIB and [95-daos.conf](../daos/95-daos.conf) are configured.
 2. Sync the DAOS server configuration file [daos_server.yml](../daos/daos_server.yml) across all the storage nodes.
 3. Ensure the certification files under `/etc/daos/certs` are owned by `daos_server:daos_server`.
 4. Start the daos_server service via [systemctl](./playbooks/systemd_start_server.yml).
-5. On the Admin node, make sure the ownership of the certifications is set to `${USER}:scitestbed`.
-6. On the Admin node:
+5. On the **Admin** node, make sure the ownership of the certifications is set to `${USER}:scitestbed`.
+6. On the **Admin** node:
     - Configure `daos_control.yml` under `/etc/daos` according to the server status.
     - Scan the storage: `dmg storage scan`. Make sure all the nodes get their corresponding 2 ranks.
     - Format (for the first time): `dmg storage format`. After this command, the system should already been started.
@@ -28,6 +29,10 @@ Real Run:
 1. Update `daos_server.yml`, `daos_agent.yml` and `daos_control.yml` across the system.
 2. Configure the certification of the new storage node.
 3. Format the new node's storage: `dmg storage format -l <new-node>`. *After a while*, check if the new node is in the system: `dmg system query --verbose`.
+
+
+### System status
+Last update on: Jan 25/2026
 
 ```bash
 # On the DAOS Admin node

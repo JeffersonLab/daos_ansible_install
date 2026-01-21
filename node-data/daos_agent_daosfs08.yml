@@ -7,10 +7,6 @@ access_points:
 - daosfs01
 - daosfs02
 - daosfs03
-- daosfs04
-- daosfs05
-- daosfs06
-- daosfs07
 
 port: 10001
 
